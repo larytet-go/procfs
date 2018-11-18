@@ -1,28 +1,23 @@
-package statm
+package maps
 
 import (
-	// "procfs/util"
 	"log"
 	"testing"
 )
 
-func TestParsingStatm(t *testing.T) {
-	// set the GLOBAL_SYSTEM_START
-	s, err := New("./testfiles/statm")
+func TestParsingMaps(t *testing.T) {
+	m, err := New("./testfiles/maps")
 
 	if err != nil {
 		t.Fatal("Got error", err)
 	}
 
-	if s == nil {
-		t.Fatal("statm is missing")
+	if m == nil {
+		t.Fatal("maps is missing")
 	}
-	log.Println("statm", s)
+	log.Println("maps", m)
 
-	if s.Size != 134008 {
-		t.Fatal("Expected size to be 134008")
-	}
-	if s.Resident != 72921 {
-		t.Fatal("Expected Resident to be 72921")
+	if len(m) != 19 {
+		t.Fatal("Expected 19 entries")
 	}
 }

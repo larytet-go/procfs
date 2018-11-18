@@ -1,13 +1,13 @@
 //
-// statm.Statm describes data in /proc/<pid>/statm.
+// maps.Maps describes data in /proc/<pid>/maps.
 //
-// Use statm.New() to create a new stat.Statm object
+// Use maps.New() to create a new maps.Maps object
 // from data in a path.
 //
-package statm
+package maps
 
 //
-// Copyright Jen Andre (jandre@gmail.com)
+// Copyright Arkady Maisnikov (jandre@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -40,26 +40,26 @@ import (
 // Abstraction for /proc/<pid>/maps
 //
 type Maps struct {
-	AddressStart uint32 // This is the starting ...
-	AddressEnd   uint32 // and ending address of the region in the process's address space
+	AddressStart uint64 // This is the starting ...
+	AddressEnd   uint64 // and ending address of the region in the process's address space
 	Perms        string // Describes how pages in the region can be accessed.
-	Offset       uint32 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
+	Offset       uint64 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
 	Device       string // If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives.
 	Inode        int    // If the region was mapped from a file, this is the file number.
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
 type ProcMap struct {
-	AddressRange uint32 // This is the starting and ending address of the region in the process's address space
+	AddressRange string // This is the starting and ending address of the region in the process's address space
 	Perms        string // Describes how pages in the region can be accessed.
-	Offset       uint32 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
+	Offset       uint64 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
 	Device       string // If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives.
 	Inode        int    // If the region was mapped from a file, this is the file number.
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
 func New(path string) ([]*Maps, error) {
-	f, err := os.Open("C:\\programs\\file.txt")
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
