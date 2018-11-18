@@ -69,32 +69,42 @@ func New(path string) ([]Maps, error) {
 	scanner := bufio.NewScanner(f)
 	var maps []Maps
 
+	var columns []string
 	for scanner.Scan() {
 		procMap := &ProcMap{}
 		line := scanner.Text()
-		columns := strings.Split(line, " ")
+		columns = strings.Split(line, " ")
 		err = util.ParseStringsIntoStruct(procMap, columns)
 		var offset uint64 = 0
-		if err == nil {
-			offset, err = strconv.ParseUint(procMap.Offset, 16, 64)
+		if err != nil {
+			break
 		}
-		if err == nil {
-			addressRange := strings.Split(procMap.AddressRange, "_")
-			addressStart, err = strconv.ParseUint(addressRange[0], 16, 64)
-			addressEnd, err = strconv.ParseUint(addressRange[1], 16, 64)
+		offset, err = strconv.ParseUint(procMap.Offset, 16, 64)
+		if err != nil {
+			break
 		}
-		if err == nil {
-			var newMap Maps = Maps{Perms: procMap.Perms,
-				AddressStart: addressStart,
-				AddressEnd:   addressEnd,
-				Offset:       offset,
-				Device:       procMap.Device,
-				Inode:        procMap.Inode,
-				Pathname:     procMap.Pathname}
-			maps = append(maps, newMap)
-		} else {
-			log.Println("Failed to parse", columns, err)
+		var addressStart uint64
+		var addressEnd uint64
+		addressRange := strings.Split(procMap.AddressRange, "-")
+		addressStart, err = strconv.ParseUint(addressRange[0], 16, 64)
+		if err != nil {
+			break
 		}
+		addressEnd, err = strconv.ParseUint(addressRange[1], 16, 64)
+		if err != nil {
+			break
+		}
+		var newMap Maps = Maps{Perms: procMap.Perms,
+			AddressStart: addressStart,
+			AddressEnd:   addressEnd,
+			Offset:       offset,
+			Device:       procMap.Device,
+			Inode:        procMap.Inode,
+			Pathname:     procMap.Pathname}
+		maps = append(maps, newMap)
+	}
+	if err != nil {
+		log.Println("Failed to parse", columns, err)
 	}
 
 	return maps, err
