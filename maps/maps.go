@@ -72,18 +72,25 @@ func New(path string) ([]Maps, error) {
 	for scanner.Scan() {
 		procMap := &ProcMap{}
 		line := scanner.Text()
-		columns := strings.Split(string(line), " ")
+		columns := strings.Split(line, " ")
 		err = util.ParseStringsIntoStruct(procMap, columns)
 		var offset uint64 = 0
 		if err == nil {
 			offset, err = strconv.ParseUint(procMap.Offset, 16, 64)
 		}
 		if err == nil {
+			addressRange := strings.Split(procMap.AddressRange, "_")
+			addressStart, err = strconv.ParseUint(addressRange[0], 16, 64)
+			addressEnd, err = strconv.ParseUint(addressRange[1], 16, 64)
+		}
+		if err == nil {
 			var newMap Maps = Maps{Perms: procMap.Perms,
-				Offset:   offset,
-				Device:   procMap.Device,
-				Inode:    procMap.Inode,
-				Pathname: procMap.Pathname}
+				AddressStart: addressStart,
+				AddressEnd:   addressEnd,
+				Offset:       offset,
+				Device:       procMap.Device,
+				Inode:        procMap.Inode,
+				Pathname:     procMap.Pathname}
 			maps = append(maps, newMap)
 		} else {
 			log.Println("Failed to parse", columns, err)
