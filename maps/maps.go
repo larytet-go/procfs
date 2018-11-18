@@ -36,27 +36,40 @@ import (
 )
 
 //
-// Abstraction for /proc/<pid>/stat
+// Abstraction for /proc/<pid>/maps
 //
-type Statm struct {
-	Size     int64 // total program size (pages)(same as VmSize in status)
-	Resident int64 //size of memory portions (pages)(same as VmRSS in status)
-	Shared   int   // number of pages that are shared(i.e. backed by a file)
-	Trs      int   // number of pages that are 'code'(not including libs; broken, includes data segment)
-	Lrs      int   //number of pages of library(always 0 on 2.6)
-	Drs      int   //number of pages of data/stack(including libs; broken, includes library text)
-	Dt       int   //number of dirty pages(always 0 on 2.6)
+type Maps struct {
+	AddressStart uint32 // This is the starting ...
+	AddressEnd   uint32 // and ending address of the region in the process's address space
+	Perms        string // Describes how pages in the region can be accessed.
+	Offset       uint32 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
+	Device       string // If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives.
+	Inode        int    // If the region was mapped from a file, this is the file number.
+	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
-func New(path string) (*Statm, error) {
+type ProcMaps struct {
+	AddressRange uint32 // This is the starting and ending address of the region in the process's address space
+	Perms        string // Describes how pages in the region can be accessed.
+	Offset       uint32 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
+	Device       string // If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives.
+	Inode        int    // If the region was mapped from a file, this is the file number.
+	Pathname     string // If the region was mapped from a file, this is the name of the file.
+}
 
+func New(path string) (*ProcMaps, *Maps, error) {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
 	lines := strings.Split(string(buf), " ")
-	stat := &Statm{}
-	err = util.ParseStringsIntoStruct(stat, lines)
-	return stat, err
+	procMaps := &ProcMaps{}
+	maps := &Maps{}
+
+	err = util.ParseStringsIntoStruct(procMaps, lines)
+	if err != nil {
+		// set maps
+	}
+	return maps, procMaps, err
 }
