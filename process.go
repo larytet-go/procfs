@@ -53,7 +53,7 @@ type Process struct {
 	limits    *limits.Limits    // Per process rlimit settings from /proc/pid/limits - see Limits()
 	loginuid  *int              // Maybe loginuid from /proc/pid/loginuid - see Loginuid()
 	sessionid *int              // Maybe sessionid from /proc/pid/sessionid- see Sessionid()
-	maps      *maps.Maps        // Process adderss space
+	maps      []*maps.Maps      // Process adderss space
 }
 
 //
@@ -277,7 +277,7 @@ func (p *Process) readEnviron() {
 //
 // Parser for /proc/<pid>/maps
 //
-func (p *Process) Maps() (*maps.Maps, error) {
+func (p *Process) Maps() ([]*maps.Maps, error) {
 	var err error
 	if p.stat == nil {
 		if p.maps, err = maps.New(path.Join(p.prefix, "maps")); err != nil {
