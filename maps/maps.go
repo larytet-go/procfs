@@ -58,14 +58,14 @@ type ProcMap struct {
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
-func New(path string) ([]Maps, error) {
+func New(path string) ([]*Maps, error) {
 	f, err := os.Open("C:\\programs\\file.txt")
 	if err != nil {
 		return nil, err
 	}
 
 	scanner := bufio.NewScanner(f)
-	var maps []Maps
+	var maps []*Maps
 
 	for scanner.Scan() {
 		procMap := &ProcMap{}
@@ -73,11 +73,8 @@ func New(path string) ([]Maps, error) {
 		columns := strings.Split(string(line), " ")
 		err = util.ParseStringsIntoStruct(procMap, columns)
 		if err != nil {
-			var newMap Maps = &Maps{
-				Perms:procMap.Perms,
-				Offset: procMap.Offset
-			}
-			append(maps, newMap)
+			var newMap *Maps = &Maps{Perms: procMap.Perms, Offset: procMap.Offset}
+			maps = append(maps, newMap)
 		}
 	}
 
