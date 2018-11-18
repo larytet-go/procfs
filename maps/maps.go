@@ -73,7 +73,11 @@ func New(path string) ([]*Maps, error) {
 		columns := strings.Split(string(line), " ")
 		err = util.ParseStringsIntoStruct(procMap, columns)
 		if err != nil {
-			var newMap *Maps = &Maps{Perms: procMap.Perms, Offset: procMap.Offset, Device: procMap.Device, Inode: procMap.Inode, Pathname: procMap.Pathname}
+			var newMap *Maps = &Maps{Perms: procMap.Perms,
+				Offset:   procMap.Offset,
+				Device:   procMap.Device,
+				Inode:    procMap.Inode,
+				Pathname: procMap.Pathname}
 			maps = append(maps, newMap)
 		}
 	}
