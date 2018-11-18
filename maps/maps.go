@@ -30,8 +30,9 @@ package statm
 //
 
 import (
+	"bufio"
 	"github.com/jandre/procfs/util"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -48,7 +49,7 @@ type Maps struct {
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
-type ProcMaps struct {
+type ProcMap struct {
 	AddressRange uint32 // This is the starting and ending address of the region in the process's address space
 	Perms        string // Describes how pages in the region can be accessed.
 	Offset       uint32 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
@@ -57,19 +58,28 @@ type ProcMaps struct {
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
-func New(path string) (*ProcMaps, *Maps, error) {
-	buf, err := ioutil.ReadFile(path)
+func New(path string) ([]Maps, error) {
+	f, err := os.Open("C:\\programs\\file.txt")
 	if err != nil {
 		return nil, err
 	}
 
-	lines := strings.Split(string(buf), " ")
-	procMaps := &ProcMaps{}
-	maps := &Maps{}
+	scanner := bufio.NewScanner(f)
+	var maps []Maps
 
-	err = util.ParseStringsIntoStruct(procMaps, lines)
-	if err != nil {
-		// set maps
+	for scanner.Scan() {
+		procMap := &ProcMap{}
+		line := scanner.Text()
+		columns := strings.Split(string(line), " ")
+		err = util.ParseStringsIntoStruct(procMap, columns)
+		if err != nil {
+			var newMap Maps = &Maps{
+				Perms:procMap.Perms,
+				Offset: procMap.Offset
+			}
+			append(maps, newMap)
+		}
 	}
-	return maps, procMaps, err
+
+	return maps, err
 }
