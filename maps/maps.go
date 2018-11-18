@@ -32,7 +32,9 @@ package maps
 import (
 	"bufio"
 	"github.com/jandre/procfs/util"
+	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -52,33 +54,39 @@ type Maps struct {
 type ProcMap struct {
 	AddressRange string // This is the starting and ending address of the region in the process's address space
 	Perms        string // Describes how pages in the region can be accessed.
-	Offset       uint64 // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
+	Offset       string // If the region was mapped from a file (using mmap), this is the offset in the file where the mapping begins. If the memory was not mapped from a file, it's just 0.
 	Device       string // If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives.
 	Inode        int    // If the region was mapped from a file, this is the file number.
 	Pathname     string // If the region was mapped from a file, this is the name of the file.
 }
 
-func New(path string) ([]*Maps, error) {
+func New(path string) ([]Maps, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 
 	scanner := bufio.NewScanner(f)
-	var maps []*Maps
+	var maps []Maps
 
 	for scanner.Scan() {
 		procMap := &ProcMap{}
 		line := scanner.Text()
 		columns := strings.Split(string(line), " ")
 		err = util.ParseStringsIntoStruct(procMap, columns)
-		if err != nil {
-			var newMap *Maps = &Maps{Perms: procMap.Perms,
-				Offset:   procMap.Offset,
+		var offset uint64 = 0
+		if err == nil {
+			offset, err = strconv.ParseUint(procMap.Offset, 16, 64)
+		}
+		if err == nil {
+			var newMap Maps = Maps{Perms: procMap.Perms,
+				Offset:   offset,
 				Device:   procMap.Device,
 				Inode:    procMap.Inode,
 				Pathname: procMap.Pathname}
 			maps = append(maps, newMap)
+		} else {
+			log.Println("Failed to parse", columns, err)
 		}
 	}
 
