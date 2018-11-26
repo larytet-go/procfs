@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandre/procfs/util"
+	"github.com/larytet-go/procfs/util"
 )
 
 //
