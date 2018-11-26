@@ -109,3 +109,11 @@ func New(path string) ([]*Maps, error) {
 
 	return maps, err
 }
+
+func Sprintf(maps []*maps.Maps) string {
+	s := ""
+	for _, m := range maps {
+		s = s + fmt.Sprintf("\n%v", (*m))
+	}
+	return s
+}
