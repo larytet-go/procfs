@@ -29,11 +29,11 @@ import (
 	"strconv"
 	"strings"
 
-	"limits"
-	"maps"
-	"stat"
-	"statm"
-	"status"
+	"github.com/larytet-go/procfs/limits"
+	"github.com/larytet-go/procfs/maps"
+	"github.com/larytet-go/procfs/stat"
+	"github.com/larytet-go/procfs/statm"
+	"github.com/larytet-go/procfs/status"
 )
 
 //
