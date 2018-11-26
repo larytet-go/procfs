@@ -31,6 +31,7 @@ package maps
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/larytet-go/procfs/util"
 	"log"
 	"os"
@@ -110,7 +111,7 @@ func New(path string) ([]*Maps, error) {
 	return maps, err
 }
 
-func Sprintf(maps []*maps.Maps) string {
+func Sprintf(maps []*Maps) string {
 	s := ""
 	for _, m := range maps {
 		s = s + fmt.Sprintf("\n%v", (*m))
