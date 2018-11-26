@@ -29,11 +29,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jandre/procfs/limits"
-	"github.com/jandre/procfs/maps"
-	"github.com/jandre/procfs/stat"
-	"github.com/jandre/procfs/statm"
-	"github.com/jandre/procfs/status"
+	"limits"
+	"maps"
+	"stat"
+	"statm"
+	"status"
 )
 
 //
