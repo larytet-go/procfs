@@ -31,7 +31,7 @@ package maps
 
 import (
 	"bufio"
-	"github.com/jandre/procfs/util"
+	"github.com/larytet-go/procfs/util"
 	"log"
 	"os"
 	"strconv"
