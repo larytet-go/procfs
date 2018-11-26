@@ -1,3 +1,8 @@
+# Update
+
+I had to fork the original github.com/jandre/procfs and add "maps" support
+Pull requests is pending
+
 # Procfs
 
 Procfs is a parser for the /proc virtual filesystem on Linux written in the Go programming lanugage.
