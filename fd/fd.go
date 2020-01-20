@@ -53,14 +53,15 @@ func New(path string) ([]FD, error) {
 	}
 	for _, file := range files {
 		filename := file.Name()
+		absoluteFilepath := filepath.Join(path, filename)
 		fd, err := strconv.Atoi(filename)
 		if err != nil {
 			continue
 		}
 		// See also https://stackoverflow.com/questions/18062026/resolve-symlinks-in-go
-		link, err := filepath.EvalSymlinks(filename)
+		link, err := filepath.EvalSymlinks(absoluteFilepath)
 		if err != nil {
-			link = filename
+			fmt.Printf("EvalSymlinks err=%v\n", err)
 		}
 		fds = append(fds, FD{ID: fd, Link: link})
 	}
