@@ -1,7 +1,7 @@
 # Update
 
-I had to fork the original github.com/jandre/procfs and add "maps" support
-Pull requests is pending
+I had to fork the original github.com/jandre/procfs and add "maps" and "fd" support
+Pull request is pending
 
 # Procfs
 
