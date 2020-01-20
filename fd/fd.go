@@ -30,9 +30,9 @@ package fd
 //
 
 import (
-	"filepath"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"strconv"
 )
 
