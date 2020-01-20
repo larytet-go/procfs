@@ -57,9 +57,11 @@ func New(path string) ([]FD, error) {
 		if err != nil {
 			continue
 		}
-		// Based on https://stackoverflow.com/questions/18062026/resolve-symlinks-in-go
-		link := filename
-		link, err = os.Readlink(filename)
+		// See also https://stackoverflow.com/questions/18062026/resolve-symlinks-in-go
+		link, err := os.Readlink(filename)
+		if err != nil {
+			link = filename
+		}
 		fds = append(fds, FD{ID: fd, Link: link})
 	}
 	return fds, nil
