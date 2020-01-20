@@ -60,10 +60,7 @@ func New(path string) ([]FD, error) {
 			continue
 		}
 		// See also https://stackoverflow.com/questions/18062026/resolve-symlinks-in-go
-		link, err := os.Readlink(absoluteFilepath)
-		if err != nil {
-			fmt.Printf("EvalSymlinks err=%v\n", err)
-		}
+		link, _ := os.Readlink(absoluteFilepath)
 		fds = append(fds, FD{ID: fd, Link: link})
 	}
 	return fds, nil
