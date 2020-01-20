@@ -32,6 +32,7 @@ package fd
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
 )
@@ -59,7 +60,7 @@ func New(path string) ([]FD, error) {
 			continue
 		}
 		// See also https://stackoverflow.com/questions/18062026/resolve-symlinks-in-go
-		link, err := filepath.EvalSymlinks(absoluteFilepath)
+		link, err := os.Readlink(absoluteFilepath)
 		if err != nil {
 			fmt.Printf("EvalSymlinks err=%v\n", err)
 		}
